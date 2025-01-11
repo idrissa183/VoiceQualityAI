@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+sqlalchemy~=2.0.36
+load-dotenv
+python-dotenv~=1.0.1
+pydantic~=2.10.4
+jose~=1.0.0
+pwdlib~=0.2.1
+pydantic_core~=2.27.2
+redis
+pydantic-settings
+psycopg2
+mysqlclient
+psycopg2-binary
+pymysql
