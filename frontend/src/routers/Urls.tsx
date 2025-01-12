@@ -5,6 +5,11 @@ import ForgotPassword from '@/templates/authentication/ForgotPassword';
 import Starter from '@/templates/pages/Starter';
 import { ReactNode } from 'react';
 import Index from '@/templates/dashboard/Index';
+import Base from '@/templates/layouts/Base';
+import BaseStarter from '@/templates/layouts/BaseStarter';
+import Home from '@/templates/pages/Home';
+import Team from '@/templates/pages/Team';
+import Contact from '@/templates/pages/Contact';
 
 interface PrivateRouteProps {
 
@@ -28,7 +33,7 @@ const Urls = () => {
     <BrowserRouter>
       <Routes>
 
-        <Route path='/' element={<Starter />}/>
+        {/* <Route path='/' element={<Starter />} /> */}
         <Route path='/auth'>
           <Route path="login" element={<Sigin />} />
           <Route path="register" element={<Signup />} />
@@ -36,14 +41,42 @@ const Urls = () => {
         </Route>
 
         {/* Routes protégées */}
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              <Index />
-            </PrivateRoute>
-          }
-        />
+        <Route element={<Base />}>
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Index />
+              </PrivateRoute>
+            }
+          />
+        </Route>
+
+        {/* Routes non protégées */}
+        <Route element={<BaseStarter />}>
+          <Route
+            path="/home"
+            element={
+              <Home />
+
+            }
+
+          />
+          <Route
+            path="/team"
+            element={
+              <Team />
+
+            }
+          />
+          <Route
+            path="/contact"
+            element={
+              <Contact />
+
+            }
+          />
+        </Route>
 
         {/* Redirection par défaut */}
         {/* <Route path="/" element={<Navigate to="/auth/login" replace />} /> */}

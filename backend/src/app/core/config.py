@@ -1,4 +1,4 @@
-from pydantic import PostgresDsn, validator, MySQLDsn
+from pydantic import PostgresDsn, validator, MySQLDsn, FilePath
 from typing import Any, Dict, Optional, Literal, Union
 from datetime import datetime, timezone
 from typing import List
@@ -20,7 +20,7 @@ class Settings(BaseSettings):
 
 
     # Database Configuration
-    DATABASE_TYPE: Literal['mysql', 'postgresql']
+    DATABASE_TYPE: Literal['mysql', 'postgresql', 'sqlite']
 
 
     # Postgresql Configuration
@@ -37,6 +37,9 @@ class Settings(BaseSettings):
     MYSQL_USER: str = "root"
     MYSQL_PASSWORD: str = "root"
     MYSQL_DB: str = "voice_quality_ai"
+
+
+    SQLITE_DB_FILE: Optional[FilePath] = "voice_quality_ai.sqlite"
 
 
     # JWT CONFIG
@@ -85,6 +88,7 @@ class Settings(BaseSettings):
     # Database URIs
     POSTGRES_URI: Optional[PostgresDsn] = None
     MYSQL_URI: Optional[MySQLDsn] = None
+    SQLITE_URI: Optional[str] = None
 
 
     @validator("POSTGRES_URI", pre=True)
@@ -117,6 +121,17 @@ class Settings(BaseSettings):
             port=values.get("MYSQL_PORT"),
             path=f"/{values.get('MYSQL_DB') or ''}"
         )
+
+    @validator("SQLITE_URI", pre=True)
+    def assemble_sqlite_uri(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
+        if isinstance(v, str):
+            return v
+        if values.get("DATABASE_TYPE") != "sqlite":
+            return None
+        db_file = values.get("SQLITE_DB_FILE")
+        if db_file:
+            return f"sqlite:///{db_file}"
+        raise ValueError("SQLITE_DB_FILE must be set when using SQLite.")
 
 
     @validator("BACKEND_CORS_ORIGINS", pre=True)
